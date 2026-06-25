@@ -2,7 +2,7 @@
 name = "trackflow"
 version = "0.1.0"
 description = "TrackFlow API"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 
 [tool.pytest.ini_options]
 testpaths = ["app/tests"]
@@ -10,7 +10,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py312"
 line-length = 88
 src = ["app"]
 

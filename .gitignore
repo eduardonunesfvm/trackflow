@@ -50,13 +50,6 @@ htmlcov/
 # Ruff
 .ruff_cache/
 
-# Database
-*.db
-*.sqlite3
-
-# Alembic
-# Keep versions/ tracked; ignore local state if any
-
 # OS
 .DS_Store
 Thumbs.db

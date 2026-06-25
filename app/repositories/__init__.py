@@ -1,1 +1,1 @@
-"""Data access layer."""
+"""Async data access layer (MongoDB)."""

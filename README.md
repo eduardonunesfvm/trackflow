@@ -1,11 +1,20 @@
 # TrackFlow
 
-API REST construída com FastAPI, seguindo Clean Architecture.
+API REST construída com FastAPI e **Arquitetura Orientada a Eventos (EDA)**, seguindo Clean Architecture.
+
+## Stack
+
+| Componente | Tecnologia |
+|------------|------------|
+| API        | FastAPI + Uvicorn |
+| Persistência | MongoDB (Motor — driver assíncrono) |
+| Mensageria | RabbitMQ (aio-pika) |
+| Config     | Pydantic Settings + `.env` |
 
 ## Requisitos
 
-- Python 3.13+
-- pip
+- Python 3.12+
+- Docker e Docker Compose (para infraestrutura local)
 
 ## Instalação
 
@@ -22,6 +31,21 @@ pip install -r requirements-dev.txt
 cp .env.example .env
 pre-commit install
 ```
+
+## Infraestrutura local
+
+Suba MongoDB e RabbitMQ via Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+| Serviço        | URL / Porta |
+|----------------|-------------|
+| MongoDB        | `mongodb://localhost:27017` |
+| Mongo Express  | http://localhost:8081 |
+| RabbitMQ       | `amqp://guest:guest@localhost:5672/` |
+| RabbitMQ UI    | http://localhost:15672 (guest/guest) |
 
 ## Executar a aplicação
 
@@ -44,33 +68,47 @@ A API ficará disponível em `http://127.0.0.1:8000`.
 
 ```
 app/
-├── api/              # Camada de apresentação (rotas HTTP)
-│   └── v1/           # Endpoints versionados
-├── core/             # Configurações e dependências
-├── models/           # Modelos SQLAlchemy (ORM)
-├── schemas/          # Schemas Pydantic (DTOs)
-├── repositories/     # Acesso a dados
-├── services/         # Regras de negócio
-├── database/         # Engine, sessão e Base ORM
-├── tests/            # Testes automatizados
-└── main.py           # Ponto de entrada FastAPI
+├── api/                  # Camada de apresentação (rotas HTTP)
+│   └── v1/               # Endpoints versionados
+├── core/                 # Configurações, dependências e lifespan
+├── events/               # Publicação e consumo de eventos (EDA)
+├── infrastructure/       # Adaptadores externos
+│   ├── mongodb/          # Cliente assíncrono MongoDB
+│   └── messaging/        # Broker RabbitMQ
+├── models/               # Documentos MongoDB (Pydantic)
+├── schemas/              # DTOs de entrada/saída
+├── repositories/         # Acesso a dados (MongoDB)
+├── services/             # Regras de negócio
+├── tests/
+└── main.py               # Factory FastAPI + lifespan
 ```
 
-## Migrações (Alembic)
+## Ciclo de vida assíncrono
 
-```bash
-# Criar nova migração
-alembic revision --autogenerate -m "descricao"
+A aplicação gerencia conexões via `lifespan` do FastAPI:
 
-# Aplicar migrações
-alembic upgrade head
-```
+1. **Startup** — conecta ao MongoDB e RabbitMQ, declara o exchange de eventos
+2. **Runtime** — dependências injetam `database`, `channel` e `EventPublisher`
+3. **Shutdown** — fecha conexões de forma limpa
+
+## Variáveis de ambiente
+
+| Variável       | Descrição                          | Padrão |
+|----------------|------------------------------------|--------|
+| `MONGO_URI`    | URI de conexão MongoDB             | `mongodb://localhost:27017` |
+| `MONGO_DB`     | Nome do banco                      | `trackflow` |
+| `RABBITMQ_URI` | URI de conexão RabbitMQ            | `amqp://guest:guest@localhost:5672/` |
+| `SPEED_LIMIT`  | Limite de velocidade global (km/h) | `80.0` |
+
+Consulte `.env.example` para a lista completa.
 
 ## Testes
 
 ```bash
 pytest
 ```
+
+Os testes utilizam um lifespan mockado — não exigem MongoDB ou RabbitMQ em execução.
 
 ## Lint e formatação
 
@@ -81,8 +119,6 @@ ruff format app
 
 ## Fluxo Git
 
-Este projeto utiliza duas branches principais:
-
 | Branch   | Propósito                                      |
 |----------|------------------------------------------------|
 | `master` | Código estável, pronto para produção           |
@@ -90,22 +126,10 @@ Este projeto utiliza duas branches principais:
 
 ### Workflow de desenvolvimento
 
-1. Partir sempre da branch `dev`:
-   ```bash
-   git checkout dev
-   git pull origin dev
-   ```
-
-2. Criar uma branch de feature a partir de `dev`:
-   ```bash
-   git checkout -b feature/nome-da-feature
-   ```
-
-3. Desenvolver, commitar e abrir Pull Request para `dev`.
-
-4. Após revisão e testes, mesclar na `dev`.
-
-5. Quando a `dev` estiver estável, abrir Pull Request de `dev` → `master` para release.
+1. Partir sempre da branch `dev`
+2. Criar branch `feature/nome-da-feature` a partir de `dev`
+3. Abrir Pull Request para `dev`
+4. Após estabilização, PR de `dev` → `master`
 
 ```
 master  ─────────────────────────────●──────────
@@ -114,7 +138,3 @@ dev     ────●──●──●──●──●──●──●─
              \    /
 feature     ●──●
 ```
-
-## Variáveis de ambiente
-
-Copie `.env.example` para `.env` e ajuste conforme necessário. Consulte o arquivo para a lista completa de variáveis.

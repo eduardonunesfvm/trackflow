@@ -1,3 +1,3 @@
-from app.database.session import Base
+from app.models.base import DocumentModel
 
-__all__ = ["Base"]
+__all__ = ["DocumentModel"]
