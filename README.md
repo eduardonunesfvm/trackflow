@@ -1,32 +1,14 @@
 <div align="center">
 
-<<<<<<< HEAD
 # 🚛 TrackFlow
-=======
-API REST construída com FastAPI e **Arquitetura Orientada a Eventos (EDA)**, seguindo Clean Architecture.
-
-## Stack
-
-| Componente | Tecnologia |
-|------------|------------|
-| API        | FastAPI + Uvicorn |
-| Persistência | MongoDB (Motor — driver assíncrono) |
-| Mensageria | RabbitMQ (aio-pika) |
-| Config     | Pydantic Settings + `.env` |
->>>>>>> dev
 
 **Sistema de rastreamento de veículos em tempo real baseado em arquitetura orientada a eventos.**
 
-<<<<<<< HEAD
 ![Python](https://img.shields.io/badge/Python-3.13+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-7.0+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.13+-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-=======
-- Python 3.12+
-- Docker e Docker Compose (para infraestrutura local)
->>>>>>> dev
 
 </div>
 
@@ -169,7 +151,6 @@ cd trackflow
 cp .env.example .env
 ```
 
-<<<<<<< HEAD
 Edite o arquivo `.env` conforme necessário:
 
 ```env
@@ -180,24 +161,6 @@ SPEED_LIMIT=80
 ```
 
 ### 3. Suba os serviços
-=======
-## Infraestrutura local
-
-Suba MongoDB e RabbitMQ via Docker Compose:
-
-```bash
-docker compose up -d
-```
-
-| Serviço        | URL / Porta |
-|----------------|-------------|
-| MongoDB        | `mongodb://localhost:27017` |
-| Mongo Express  | http://localhost:8081 |
-| RabbitMQ       | `amqp://guest:guest@localhost:5672/` |
-| RabbitMQ UI    | http://localhost:15672 (guest/guest) |
-
-## Executar a aplicação
->>>>>>> dev
 
 ```bash
 docker compose up --build
@@ -212,7 +175,6 @@ A documentação interativa (Swagger) estará em `http://localhost:8000/docs`.
 ## 📁 Estrutura do Projeto
 
 ```
-<<<<<<< HEAD
 trackflow/
 ├── app/
 │   ├── api/
@@ -265,48 +227,11 @@ trackflow/
 - [x] Tratamento global de exceções
 - [x] Logging estruturado
 - [x] Containerização completa com Docker Compose
-=======
-app/
-├── api/                  # Camada de apresentação (rotas HTTP)
-│   └── v1/               # Endpoints versionados
-├── core/                 # Configurações, dependências e lifespan
-├── events/               # Publicação e consumo de eventos (EDA)
-├── infrastructure/       # Adaptadores externos
-│   ├── mongodb/          # Cliente assíncrono MongoDB
-│   └── messaging/        # Broker RabbitMQ
-├── models/               # Documentos MongoDB (Pydantic)
-├── schemas/              # DTOs de entrada/saída
-├── repositories/         # Acesso a dados (MongoDB)
-├── services/             # Regras de negócio
-├── tests/
-└── main.py               # Factory FastAPI + lifespan
-```
-
-## Ciclo de vida assíncrono
-
-A aplicação gerencia conexões via `lifespan` do FastAPI:
-
-1. **Startup** — conecta ao MongoDB e RabbitMQ, declara o exchange de eventos
-2. **Runtime** — dependências injetam `database`, `channel` e `EventPublisher`
-3. **Shutdown** — fecha conexões de forma limpa
-
-## Variáveis de ambiente
-
-| Variável       | Descrição                          | Padrão |
-|----------------|------------------------------------|--------|
-| `MONGO_URI`    | URI de conexão MongoDB             | `mongodb://localhost:27017` |
-| `MONGO_DB`     | Nome do banco                      | `trackflow` |
-| `RABBITMQ_URI` | URI de conexão RabbitMQ            | `amqp://guest:guest@localhost:5672/` |
-| `SPEED_LIMIT`  | Limite de velocidade global (km/h) | `80.0` |
-
-Consulte `.env.example` para a lista completa.
->>>>>>> dev
 
 ---
 
 ## 🎯 Conceitos Estudados
 
-<<<<<<< HEAD
 | Conceito | Como é aplicado no projeto |
 |----------|--------------------------|
 | **Event-Driven Architecture** | A API publica eventos; consumers reagem a eles de forma independente |
@@ -317,36 +242,9 @@ Consulte `.env.example` para a lista completa.
 | **Arquitetura em Camadas** | Separação clara entre Routes, Services e Repositories |
 | **Princípios SOLID** | Responsabilidade única e inversão de dependência nas camadas |
 | **Containerização** | Todos os serviços sobem com um único `docker compose up` |
-=======
-Os testes utilizam um lifespan mockado — não exigem MongoDB ou RabbitMQ em execução.
-
-## Lint e formatação
->>>>>>> dev
 
 ---
 
 ## 📄 Licença
 
-<<<<<<< HEAD
 Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
-=======
-| Branch   | Propósito                                      |
-|----------|------------------------------------------------|
-| `master` | Código estável, pronto para produção           |
-| `dev`    | Integração contínua de novas funcionalidades   |
-
-### Workflow de desenvolvimento
-
-1. Partir sempre da branch `dev`
-2. Criar branch `feature/nome-da-feature` a partir de `dev`
-3. Abrir Pull Request para `dev`
-4. Após estabilização, PR de `dev` → `master`
-
-```
-master  ─────────────────────────────●──────────
-                  \                 /
-dev     ────●──●──●──●──●──●──●──●──●
-             \    /
-feature     ●──●
-```
->>>>>>> dev
