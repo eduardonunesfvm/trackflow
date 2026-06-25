@@ -13,7 +13,12 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     debug: bool = False
 
-    database_url: str = "sqlite:///./trackflow.db"
+    mongo_uri: str = "mongodb://localhost:27017"
+    mongo_db: str = "trackflow"
+
+    rabbitmq_uri: str = "amqp://guest:guest@localhost:5672/"
+
+    speed_limit: float = 80.0
 
     api_v1_prefix: str = "/api/v1"
 
