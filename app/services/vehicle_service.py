@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi import HTTPException, status
-from app.models.vehicle import VehicleCreate
+from app.schemas.vehicle import VehicleCreate
 from app.repositories.vehicle_repository import VehicleRepository
 
 class VehicleService:

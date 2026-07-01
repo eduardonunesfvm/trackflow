@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.models.vehicle import VehicleCreate, VehicleResponse
+from app.schemas.vehicle import VehicleCreate, VehicleResponse
 from app.services.vehicle_service import VehicleService
 from fastapi import Depends, status
 from motor.motor_asyncio import AsyncIOMotorDatabase

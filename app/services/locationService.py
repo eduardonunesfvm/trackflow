@@ -1,7 +1,7 @@
 import json
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi import HTTPException, status
-from app.models.location import LocationPost, LocationEventMessage
+from app.schemas.location import LocationPost, LocationEventMessage
 from app.repositories.vehicle_repository import VehicleRepository
 
 

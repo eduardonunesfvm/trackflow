@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, Request, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.core.dependencies import get_mongodb  # Ajuste o import se necessário
-from app.models.location import LocationPost
+from app.schemas.location import LocationPost
 from app.services.locationService import LocationService
+from app.services.location_history_service import LocationHistoryService
+from app.schemas.location import LocationEventMessage 
 
 API_ROUTER = APIRouter(prefix="/locations", tags=["Localizações"])
 
@@ -23,3 +25,13 @@ async def receive_location(
     await service.receive_gps_ping(location_in)
     
     return {"status": "Event published successfully", "queue": "gps.location.received"}
+
+@API_ROUTER.get("/vehicle/{vehicle_id}", response_model=list[LocationEventMessage])
+async def get_vehicle_history(
+    vehicle_id: str, 
+    limit: int = 50, 
+    db: AsyncIOMotorDatabase = Depends(get_mongodb)
+):
+    """Retorna os últimos pontos geográficos de um veículo específico para renderização no mapa."""
+    service = LocationHistoryService(db)
+    return await service.get_history_for_map(vehicle_id, limit)

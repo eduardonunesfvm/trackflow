@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from app.models.vehicle import VehicleCreate
+from app.schemas.vehicle import VehicleCreate
 from datetime import datetime
 from bson import ObjectId
 
