@@ -1,19 +1,6 @@
-from fastapi import APIRouter, Depends, status
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from app.core.dependencies import get_mongodb
-from app.models.vehicle import VehicleCreate, VehicleResponse
-from app.services.vehicle_service import VehicleService
+from app.api.v1.endpoints import vehicles, locations 
+from fastapi import APIRouter
 
-API_ROUTER = APIRouter(prefix="/vehicles", tags=["Veículos"])
-
-@API_ROUTER.post("", response_model=VehicleResponse, status_code=status.HTTP_201_CREATED)
-async def create_vehicle(vehicle_in: VehicleCreate, db: AsyncIOMotorDatabase = Depends(get_mongodb)):
-    # Inicializa o serviço injetando o banco
-    service = VehicleService(db)
-    # Delega toda a execução para a camada de serviço
-    return await service.register_vehicle(vehicle_in)
-
-@API_ROUTER.get("", response_model=list[VehicleResponse])
-async def list_vehicles(db: AsyncIOMotorDatabase = Depends(get_mongodb)):
-    service = VehicleService(db)
-    return await service.get_all_vehicles()
+API_ROUTER = APIRouter(prefix="/v1")
+API_ROUTER.include_router(vehicles.API_ROUTER)
+API_ROUTER.include_router(locations.API_ROUTER)
